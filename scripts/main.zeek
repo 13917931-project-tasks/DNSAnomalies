@@ -88,7 +88,7 @@ event zeek_init() &priority=5
 #	}
 
 # Example event defined in dnsanomalies.evt.
-event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags_data: string)
+event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags_data: string) &priority=5
 	{
 	#hook set_session(c);
 	local msg_type: string;
