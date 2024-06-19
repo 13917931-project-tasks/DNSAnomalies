@@ -3,5 +3,30 @@
 module dnsanomalies;
 
 public type dnsa_unit = unit {
+    id: Dns_Id;
+    flags: Flags;
     payload: bytes &eod;
+    #on %done { print self;} 
+    	
+}; 
+
+#&convert=self.flags.flags_data.to_int();
+
+
+public type Dns_Id = unit {
+    id_data: bytes &size=2;
+    #id_data: bytes &until=b"\x00";
+    #on %done {print "Id's: %s" % self; }
 };
+
+#var window_data:string;
+#wdata: int16 {self.window_data="%d" % $$;}
+
+public type Flags = unit {
+    #b"\x9e";
+    var flags_data:string;
+    fdata: int8 {self.flags_data="%d" % $$;}
+    #on %done { print "Flags: %s" % self; }
+};
+
+
