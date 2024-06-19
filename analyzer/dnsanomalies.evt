@@ -1,0 +1,16 @@
+import dnsanomalies;
+import Zeek_dnsanomalies;
+
+# TODO: Adjust below how/when the analyzer will be activated. The example
+# defines a well-known port to trigger it. For more information, see:
+#
+#   https://docs.zeek.org/projects/spicy/en/latest/zeek.html#interface-definitions-evt-files
+#
+protocol analyzer dnsanomalies over UDP:
+    parse originator with dnsanomalies::dnsa_unit,
+    parse responder with dnsanomalies::dnsa_unit;
+
+# TODO: Connect Spicy-side events with Zeek-side events. The example just
+# defines a simple example event that forwards the raw data (which in practice
+# you don't want to do!).
+on dnsanomalies::dnsa_unit -> event dnsanomalies::message($conn, $is_orig, self.payload);

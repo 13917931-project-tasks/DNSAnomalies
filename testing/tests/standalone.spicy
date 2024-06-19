@@ -1,0 +1,7 @@
+# @TEST-DOC: Test parsing behavior of dnsanomalies.
+#
+# @TEST-EXEC: spicyc ${DIST}/analyzer/dnsanomalies.spicy -j -d -o dnsanomalies.hlto
+#
+# TODO: Add/adapt standalone parsing tests here.
+# @TEST-EXEC: printf "test string" | spicy-dump -p dnsanomalies::dnsa_unit dnsanomalies.hlto >output 2>&1
+# @TEST-EXEC: TEST_DIFF_CANONIFIER= btest-diff output

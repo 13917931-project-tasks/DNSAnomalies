@@ -1,0 +1,7 @@
+# TODO: Define your analyzer here.
+
+module dnsanomalies;
+
+public type dnsa_unit = unit {
+    payload: bytes &eod;
+};
