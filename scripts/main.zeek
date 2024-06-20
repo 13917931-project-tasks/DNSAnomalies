@@ -102,7 +102,11 @@ event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags
 		#info$reply = payload;
 		msg_type="REPLY";
 		}
-	Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$uid, $id=c$id, $msg_type=msg_type, $flags_byte=flags_data, $payload_size=|payload|]);
+	if (flags_data=="-98"){
+		if (|payload|>250){
+			Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$uid, $id=c$id, $msg_type=msg_type, $flags_byte=flags_data, $payload_size=|payload|]);
+			}
+		}
 	}
 
 
