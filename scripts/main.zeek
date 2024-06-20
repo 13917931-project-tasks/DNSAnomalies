@@ -5,7 +5,9 @@ module dnsanomalies;
 export {
 	## Log stream identifier.
 	redef enum Log::ID += { LOG };
-
+	
+	global counter = 0;
+	
 	## The ports to register dnsanomalies for.
 	const ports = {
 		# TODO: Replace with actual port(s).
@@ -21,9 +23,13 @@ export {
 		uid: string &log;
 		## The connection's 4-tuple of endpoint addresses/ports.
 		id: conn_id &log;
-		msg_type: string &log;
-		flags_byte: string &log;
-		payload_size: count &log;
+		
+		query: string &optional &log;
+		entropy: double &optional &log;
+		
+		msg_type: string &optional &log;
+		flags_byte: string &optional &log;
+		payload_size: count &optional &log;
 
 		# TODO: Adapt subsequent fields as needed.
 
@@ -86,6 +92,104 @@ event zeek_init() &priority=5
 #	Log::write(dnsanomalies::LOG, c$dnsanomalies);
 #	delete c$dnsanomalies;
 #	}
+
+function entropy(data: string):double
+	{
+	local result = 0.0;
+	local words: vector of string;
+	local repetition: vector of string;
+	local total = vector(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+
+	for (d in data)
+		{
+		
+		words += d;
+		
+		}
+	for (a in words)
+	{
+		if (|repetition|==0)
+		{
+			repetition += words[0];
+			total[0]+=1;
+		}
+		else
+		{
+			counter=0;
+			for (b in repetition) {
+				
+				if (repetition[b]==words[a])
+					{
+						total[b]+=1;
+						counter=1;
+						break;
+					
+					}
+					
+				else {
+				
+					#print fmt("%s!=%s",repetition[b],words[a]);
+				}
+			}
+			if (counter==0){
+				repetition+=words[a];
+				#print words[a];
+				total[|repetition|]+=1;
+
+			}
+		
+		}
+		
+	}
+	
+	
+	for (c in total)
+		{
+		if (total[c]>0){
+		#print total[c];
+		}
+		}
+	for (c in repetition){
+		#print repetition[c];
+	}
+	
+	for (t in total){
+		if (total[t]>=1)
+		{
+		local freq: double;
+		local qtt: double;
+		local len: double;
+		len = |data|;
+		qtt = total[t];
+		freq=0.0;
+		freq = ((qtt)/(len));
+		#print freq, qtt,len;
+		result += ((freq)*(log2(freq)))*(-1);
+		#print result;
+		}
+		}
+	
+
+	
+		
+	#result = result * (-1);
+	
+	return result;
+	
+}
+
+event dns_request(c: connection, msg: dns_msg, query: string, qtype: count, qclass: count) &priority=5
+{
+	local entropy_result = entropy(query);
+	
+	#total_entropy += entropy(query);
+	#total_queries += 1;
+	
+	#if (entropy_result >= 3.8){
+	Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$dns$uid, $id=c$dns$id, $query=c$dns$query, $entropy=entropy_result]);	
+	#}
+}
 
 # Example event defined in dnsanomalies.evt.
 event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags_data: string) &priority=5
