@@ -7,11 +7,7 @@ export {
 	redef enum Log::ID += { LOG };
 	
 	## The ports to register dnsanomalies for.
-	const ports = {
-		# TODO: Replace with actual port(s).
-		53/udp,
-                5353/udp
-	} &redef;
+	#const ports = {53/udp,5353/udp}&redef;
 
 	## Record type containing the column fields of the dnsanomalies log.
 	type Info: record {
@@ -49,7 +45,7 @@ export {
 #	dnsanomalies: Info &optional;
 #};
 
-redef likely_server_ports += { ports };
+#redef likely_server_ports += { ports };
 
 # TODO: If you're going to send file data into the file analysis framework, you
 # need to provide a file handle function. This is a simple example that's
@@ -64,7 +60,7 @@ event zeek_init() &priority=5
 	{
 	Log::create_stream(dnsanomalies::LOG, [$columns=Info, $ev=log_dnsanomalies, $path="dnsanomalies", $policy=log_policy]);
 
-	Analyzer::register_for_ports(Analyzer::ANALYZER_DNSANOMALIES, ports);
+	#Analyzer::register_for_ports(Analyzer::ANALYZER_DNSANOMALIES, ports);
 
 	# TODO: To activate the file handle function above, uncomment this.
 	# Files::register_protocol(Analyzer::ANALYZER_DNSANOMALIES, [$get_file_handle=dnsanomalies::get_file_handle ]);
