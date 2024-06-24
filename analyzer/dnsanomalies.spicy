@@ -3,8 +3,8 @@
 module dnsanomalies;
 
 public type dnsa_unit = unit {
-    id: Dns_Id;
-    flags: Flags;
+    #id: Dns_Id;
+    #flags: Flags;
     payload: bytes &eod;
     #on %done { print self;} 
     	

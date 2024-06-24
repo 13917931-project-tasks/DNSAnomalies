@@ -15,4 +15,5 @@ protocol analyzer dnsanomalies over UDP:
 # TODO: Connect Spicy-side events with Zeek-side events. The example just
 # defines a simple example event that forwards the raw data (which in practice
 # you don't want to do!).
-on dnsanomalies::dnsa_unit -> event dnsanomalies::message($conn, $is_orig, self.payload, self.flags.flags_data);
+#on dnsanomalies::dnsa_unit -> event dnsanomalies::message($conn, $is_orig, self.payload, self.flags.flags_data);
+on dnsanomalies::dnsa_unit -> event dnsanomalies::message($conn, $is_orig, self.payload);
