@@ -91,7 +91,6 @@ event zeek_init() &priority=5
 event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags_data: string) &priority=5
 	{
 	#$msg_type=msg_type
-	Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$uid, $id=c$id, $flags_bytes=flags_data, $payload_size=|payload|]);
 	#hook set_session(c);
 	local msg_type: string;
 	#local info = c$dnsanomalies;
@@ -104,10 +103,10 @@ event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags
 		#info$reply = payload;
 		msg_type="REPLY";
 		}
-	#if (flags_data=="-98"){
-		#if (|payload|>250){
-
-			#}
+	#if (flags_data=="-25056"){
+		if (|payload|>250){
+			Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$uid, $id=c$id, $flags_bytes=flags_data, $payload_size=|payload|]);
+			}
 		#}
 	}
 
