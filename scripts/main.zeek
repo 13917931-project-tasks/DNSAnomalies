@@ -20,7 +20,7 @@ export {
 		
 	
 		#msg_type: string &optional &log;
-		#flags_byte: string &optional &log;
+		flags_bytes: string &optional &log;
 		payload_size: count &optional &log;
 
 		# TODO: Adapt subsequent fields as needed.
@@ -87,11 +87,11 @@ event zeek_init() &priority=5
 
 
 # Example event defined in dnsanomalies.evt.
-#event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags_data: string) &priority=5
-event dnsanomalies::message(c: connection, is_orig: bool, payload: string) &priority=5
+#event dnsanomalies::message(c: connection, is_orig: bool, payload: string) &priority=5
+event dnsanomalies::message(c: connection, is_orig: bool, payload: string, flags_data: string) &priority=5
 	{
 	#$msg_type=msg_type
-	Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$uid, $id=c$id, $payload_size=|payload|]);
+	Log::write(dnsanomalies::LOG, [$ts=network_time(), $uid=c$uid, $id=c$id, $flags_bytes=flags_data, $payload_size=|payload|]);
 	#hook set_session(c);
 	local msg_type: string;
 	#local info = c$dnsanomalies;
